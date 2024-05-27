@@ -3,5 +3,5 @@ from .views import *
 
 
 urlpatterns = [
-    path('api-auth', UserRegistration, name='user')
+    path('', LoginTokerSerializer.as_view(), name='user')
 ]

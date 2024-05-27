@@ -3,10 +3,15 @@ from rest_framework import generics, viewsets, status
 from .serializers import *
 from .models import *
 from rest_framework.decorators import action
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import TokenObtainPairSerializer
 from datetime import datetime
 from rest_framework.response import Response
 from django.utils import timezone
 # Create your views here.
+
+class LoginTokerSerializer(TokenObtainPairView):
+    serializers_class = MyTokenObtainPairSerializer
 
 
 

@@ -1,36 +1,75 @@
 <template>
-<div class="nav">
-  <router-link :to="{'path': '/signup'}">Go to Foo</router-link>
-</div>
+
+<v-container>
+  <v-row class="mt-3 ml-3" >
+    <v-col col="2">
+      <v-sheet class="d-flex">
+        <v-col col = "1" ><router-link :to="{'path': '/signup'}">Register</router-link></v-col>
+        <v-col col="1"><router-link :to="{'path': '/login'}">Login</router-link></v-col>
+      </v-sheet>
+    </v-col>
+  </v-row>
+</v-container>
 
 
-<div class="central">
-    <div class="central-header">
-        <p>Gunun mezennesi {{ CurrentDate }} </p>
-    </div>
 
-    <form action="GET" class="search">
-        <input type="search" v-model="searchQuery" @input="HandleSearch" name="" id="">
-    </form>
+    <v-container>
+      <v-row class="mt-3">
+        <v-col col="12" align="center" >
+            <v-text-field
+          v-model="searchQuery"
+          label="Search"
+          @input = HandleSearch
+          placeholder="Code or Name"
+          ></v-text-field> 
+        </v-col>
+      </v-row>  <!--This search field-->
+      
+      <v-sheet class="d-flex" >
+        <v-col col="6" >
+          <v-sheet class ="d-flex">
+            <v-text-field
+          v-model="fromAmount"
+          @input = 'handleAmountChange'
+          label="From Exchange"
+          placeholder="Value"
+          
+          ></v-text-field> 
+          <v-select
+            v-model="fromCurrency"
+            label="Select"
+            :items="currencies"
+            item-title="code"
+            item-value="value"
+            return-object=""
+          ></v-select>
+          </v-sheet>
+        </v-col>
+        <v-col col="6" >
+          <v-sheet class ="d-flex">
+            <v-text-field
+          v-model="toAmount"
+          @input = 'handleAmountChange'
+          label="To Exchange"
+          placeholder="Value"
+          ></v-text-field> 
+          <v-select
+          v-model="toCurrency"
+        label="Select"
+        :items="currencies"
+        item-title="code"
+        item-value="value"
+        return-object=""
+      ></v-select>
+          </v-sheet>
+        </v-col>
+        
+      </v-sheet>
+        
+    </v-container>
+
+
     
-    <div class="currency-converter">
-        <div>
-            <input type="text" v-model="fromAmount" @input="handleAmountChange()" placeholder="Enter amount">
-            <div class="input-select">
-                <select v-model="fromCurrency">
-                    <option v-for="currency in currencies" :value="currency.code" :key="'from_' + currency.code">{{ currency.code }} - {{ currency.name }}</option>
-                </select>
-            </div>
-        </div>
-        <div>
-            <input type="text" v-model="toAmount" @input="handleAmountChange()" placeholder="Enter amount">
-            <div class="input-select">
-                <select v-model="toCurrency" >
-                    <option v-for="currency in currencies" :value="currency.code" :key="'to_' + currency.code">{{ currency.code }} - {{ currency.name }}</option>
-                </select>
-            </div>
-        </div>
-  </div>
 
     <table style="width:100%; margin-top: 30px;">
         <tr>
@@ -55,11 +94,10 @@
                 <td>{{ currency.value }}</td>
             </tr>
         </template>
-        
-    </table>
-
     
-</div>
+    </table>
+   
+
 
 
 
@@ -70,6 +108,7 @@
 <script>
 import axios from "axios";
 import debounce from 'lodash/debounce'; 
+
 // import { useRouter } from 'vue-router';
 
 export default {
@@ -83,6 +122,10 @@ export default {
         fromAmount: '', // Amount in "from" currency
         toAmount: '',
         CurrentDate: '', 
+        numberValidateRule:[
+        v => !!v || 'Value is required',
+        v => /^\d*\.?\d{0,4}$/.test(v) || 'Invalid number format'
+      ]
     }
   },
   mounted(){
@@ -98,6 +141,9 @@ export default {
             console.error('Dont find')
         }
     },
+    
+
+
     async HandleSearch(){
         debounce(() => {
         if (this.searchQuery) {
@@ -113,27 +159,34 @@ export default {
         // }
       }, 300)();
     },
-    isNumberOrDecimal(input){
+
+
+    async isNumberOrDecimal(input){
         const numberPattern = /^-?\d+(\.\d{1,4})?$/;
 
         return numberPattern.test(input)
     },
+
+
     async handleAmountChange() {
       // Validate input as number or decimal number
       if(this.isNumberOrDecimal(this.fromAmount)){
+        // console.log(this.fromCurrency)
         this.convertCurrency()
       }else{
-        console.log('yalniz 4 deqiqliye qeder')
+        this.fromAmount=''
       }
     },
-    async convertCurrency() {
-      if (this.fromCurrency && this.toCurrency && this.fromCurrency !== this.toCurrency) {
-        // Fetch currency conversion rates
-        const fromCurrencyRate = this.currencies.find(currency => currency.code === this.fromCurrency).value;
-        
-        const toCurrencyRate = this.currencies.find(currency => currency.code === this.toCurrency).value;
-        // Perform conversion
 
+
+    async convertCurrency() {
+      if (this.fromCurrency.code && this.toCurrency.code && this.fromCurrency.code !== this.toCurrency.code) {
+        // Fetch currency conversion rates
+        const fromCurrencyRate = this.currencies.find(currency => currency.code === this.fromCurrency.code).value;
+        
+        const toCurrencyRate = this.currencies.find(currency => currency.code === this.toCurrency.code).value;
+        // Perform conversion
+        console.log(this.fromAmount)
         this.toAmount = ((parseFloat(this.fromAmount).toFixed(4) * fromCurrencyRate) / toCurrencyRate).toFixed(4)
         
       } else {
@@ -170,6 +223,7 @@ export default {
 
 
 <style>
+
 .central{
     position: absolute;
     top: 50%;
@@ -206,16 +260,22 @@ export default {
   width: 300px;
 }
 
-.input-select {
+.myselectbox{
   position: relative;
+
 }
 
-.input-select select {
+.myselectbox select {
   position: absolute;
   right: 60px;
   top: -21px;
   width: 20%;
   height: 20px;
+  border: 1px solid black;
+}
+
+.selected{
+  color: black;
 }
 table, th, td {
   border:1px solid black;

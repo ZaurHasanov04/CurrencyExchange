@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'currencyapi',
     'user',
+    'rest_framework_simplejwt',
     'django_celery_beat',
     'rest_framework',
 
@@ -135,9 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-REST_FRAMEWORK = {
-    'COERCE_DECIMAL_TO_STRING': False,
-}
+
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -154,3 +153,20 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'zaurqwerty@gmail.com'
 EMAIL_HOST_PASSWORD = 'xzob uqsa xjzd jvmh'
+
+
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False,
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+
+SIMPLE_JWT = {
+  # It will work instead of the default serializer(TokenObtainPairSerializer).
+  "TOKEN_OBTAIN_SERIALIZER": "user.serializers.MyTokenObtainPairSerializer",
+  
+}
