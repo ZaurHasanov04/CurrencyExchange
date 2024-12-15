@@ -1,4 +1,4 @@
-This project is given me in interview when I join to startup, that's why, I firstly parse API and integrate to front(This process can be doing directly in front)  to show my skills over both of frontend and backend.
+This project was given me in interview when I join to startup, that's why, I firstly parse API and integrate to front(This process can be doing directly in front)  to show my skills over both of frontend and backend.
 
 # Periodic task
 This task is used for calling api one time per a day.
